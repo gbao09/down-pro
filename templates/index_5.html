@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Down Pro // Cyber Studio Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/wavesurfer.js@7"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Orbitron:wght@600;800;900&display=swap');
+
+        :root, :root[data-theme="dark"] {
+            --bg-dark: #070913;
+            --bg-card: rgba(15, 20, 32, 0.55);
+            --bg-sidebar: rgba(10, 13, 20, 0.65);
+            --border-glow: rgba(0, 240, 255, 0.25);
+            --neon-pink: #ff2a75;
+            --neon-cyan: #00f0ff;
+            --neon-green: #00ff88;
+            --neon-purple: #b026ff;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --modal-bg: rgba(11, 15, 25, 0.75);
+            --input-bg: rgba(8, 12, 20, 0.6);
+            --border-color: rgba(255, 255, 255, 0.12);
+            --table-hover: rgba(255, 255, 255, 0.05);
+            --glass-blur: blur(25px) saturate(180%);
+            --liquid-glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+
+        :root[data-theme="light"] {
+            --bg-dark: #f1f5f9;
+            --bg-card: rgba(255, 255, 255, 0.65);
+            --bg-sidebar: rgba(248, 250, 252, 0.75);
+            --border-glow: rgba(0, 119, 255, 0.2);
+            --neon-pink: #e11d48;
+            --neon-cyan: #0284c7;
+            --neon-green: #16a34a;
+            --neon-purple: #9333ea;
+            --text-main: #0f172a;
+            --text-sub: #64748b;
+            --modal-bg: rgba(255, 255, 255, 0.8);
+            --input-bg: rgba(241, 245, 249, 0.6);
+            --border-color: rgba(0, 0, 0, 0.1);
+            --table-hover: rgba(0, 0, 0, 0.03);
+            --glass-blur: blur(20px) saturate(180%);
+            --liquid-glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15), inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+        }
+
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Be Vietnam Pro', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        body { 
+            background-color: var(--bg-dark); 
+            color: var(--text-main); 
+            display: flex; 
+            height: 100vh; 
+            overflow: hidden; 
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(0, 240, 255, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(176, 38, 255, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(255, 42, 117, 0.05) 0%, transparent 60%);
+            background-attachment: fixed;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        @keyframes eqWave {
+            0% { height: 4px; }
+            50% { height: 20px; }
+            100% { height: 6px; }
+        }
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(200%); }
+        }
+        @keyframes pulseDot {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(0, 240, 255, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 240, 255, 0); }
+        }
+
+        .sidebar {
+            width: 280px;
+            background: var(--bg-sidebar);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-right: 1px solid var(--border-color);
+            box-shadow: var(--liquid-glass-shadow);
+            display: flex;
+            flex-direction: column;
+            padding: 32px 20px;
+            z-index: 10;
+        }
+
+        .logo-box {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 40px;
+            padding-left: 6px;
+        }
+        .logo-icon {
+            width: 46px;
+            height: 46px;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 20px;
+            box-shadow: 0 8px 25px rgba(0, 240, 255, 0.3);
+        }
+        .logo-text { font-family: 'Orbitron', sans-serif; font-size: 16px; font-weight: 800; color: var(--text-main); letter-spacing: 1px; }
+        .logo-text span { color: var(--neon-cyan); }
+
+        .eq-group { display: flex; align-items: flex-end; gap: 3px; height: 20px; }
+        .eq-bar { width: 3px; background: var(--neon-cyan); border-radius: 2px; animation: eqWave 1.2s infinite ease-in-out; }
+        .eq-bar:nth-child(1) { animation-delay: 0.1s; }
+        .eq-bar:nth-child(2) { animation-delay: 0.4s; background: var(--neon-pink); }
+        .eq-bar:nth-child(3) { animation-delay: 0.2s; }
+        .eq-bar:nth-child(4) { animation-delay: 0.5s; background: var(--neon-green); }
+
+        .menu-list { display: flex; flex-direction: column; gap: 10px; }
+        .menu-btn {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid transparent;
+            color: var(--text-sub);
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-align: left;
+        }
+        .menu-btn:hover { color: var(--text-main); background: rgba(255, 255, 255, 0.06); border-color: var(--border-color); backdrop-filter: blur(10px); }
+        .menu-btn.active {
+            background: linear-gradient(90deg, rgba(0,240,255,0.15), rgba(0,240,255,0.04));
+            color: var(--text-main);
+            border-left: 4px solid var(--neon-cyan);
+            border-color: rgba(0,240,255,0.25);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            font-weight: 700;
+            backdrop-filter: blur(10px);
+        }
+        .menu-btn.active i { color: var(--neon-cyan); filter: drop-shadow(0 0 8px var(--neon-cyan)); }
+
+        .main-workspace {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 40px 48px;
+            position: relative;
+        }
+
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+        .page-heading h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .page-heading p { font-size: 13.5px; color: var(--text-sub); margin-top: 6px; font-weight: 500; }
+
+        .header-actions { display: flex; align-items: center; gap: 14px; }
+
+        .theme-toggle-btn, .info-trigger-btn, .system-pill {
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            padding: 10px 18px;
+            border-radius: 30px;
+            font-size: 12.5px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--liquid-glass-shadow);
+        }
+
+        .theme-toggle-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+        .theme-toggle-btn:hover { border-color: var(--neon-cyan); transform: translateY(-2px); background: rgba(255,255,255,0.1); }
+
+        .system-pill {
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            color: var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.1), inset 0 0 10px rgba(0,240,255,0.05);
+        }
+        .pulse-dot { width: 8px; height: 8px; background: var(--neon-cyan); border-radius: 50%; animation: pulseDot 2s infinite; }
+
+        .info-trigger-btn {
+            background: rgba(255, 42, 117, 0.1);
+            border: 1px solid rgba(255, 42, 117, 0.3);
+            color: var(--neon-pink);
+            box-shadow: 0 0 20px rgba(255,42,117,0.1), inset 0 0 10px rgba(255,42,117,0.05);
+        }
+        .info-trigger-btn:hover {
+            background: rgba(255, 42, 117, 0.2);
+            border-color: var(--neon-pink);
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(255,42,117,0.25);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(3, 5, 12, 0.65);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        .modal-overlay.open { display: flex; }
+        
+        .modal-card, .welcome-modal-card {
+            background: var(--modal-bg);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            border-radius: 24px;
+            padding: 36px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5), var(--liquid-glass-shadow);
+            position: relative;
+            text-align: center;
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+        }
+        .modal-card { width: 420px; }
+        .welcome-modal-card { width: 460px; max-width: 90%; max-height: 90vh; overflow-y: auto; }
+
+        .modal-close {
+            position: absolute;
+            top: 18px; right: 20px;
+            background: transparent;
+            border: none;
+            color: var(--text-sub);
+            font-size: 18px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .modal-close:hover { color: var(--text-main); }
+        
+        .modal-avatar {
+            width: 84px; height: 84px;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+            border-radius: 50%;
+            margin: 0 auto 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+            color: #fff;
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.4);
+        }
+        .modal-card h2, .welcome-modal-card h2 { font-family: 'Orbitron', sans-serif; font-size: 18px; color: var(--text-main); margin-bottom: 8px; letter-spacing: 0.5px; }
+        .modal-card p, .welcome-modal-card p { font-size: 13.5px; color: var(--text-sub); line-height: 1.6; font-weight: 500; }
+        
+        .social-links { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
+        .social-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(24, 119, 242, 0.15);
+            border: 1px solid rgba(24, 119, 242, 0.4);
+            color: #3b82f6;
+            padding: 12px 24px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 14px;
+            text-decoration: none;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+        .social-btn:hover {
+            background: #2563eb;
+            color: #fff;
+            box-shadow: 0 0 25px rgba(37, 99, 235, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .qr-img-box {
+            width: 170px;
+            height: 170px;
+            margin: 14px auto;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 2px solid var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.25);
+            background: #fff;
+        }
+        .qr-img-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        .chat-widget-container { position: fixed; bottom: 25px; right: 25px; z-index: 999; }
+        .chat-bubble-btn {
+            width: 58px; height: 58px;
+            background: linear-gradient(135deg, #2563eb, var(--neon-cyan));
+            border-radius: 50%;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .chat-bubble-btn:hover { transform: scale(1.1); }
+        
+        .chat-box {
+            position: absolute;
+            bottom: 75px; right: 0;
+            width: 340px;
+            background: var(--modal-bg);
+            border: 1px solid rgba(37, 99, 235, 0.4);
+            border-radius: 18px;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.4), var(--liquid-glass-shadow);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+        }
+        .chat-box.open { display: flex; }
+        
+        .chat-header {
+            background: linear-gradient(135deg, rgba(37,99,235,0.8), rgba(30,58,138,0.8));
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(10px);
+        }
+        .chat-body {
+            padding: 16px;
+            height: 190px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: var(--input-bg);
+        }
+        .chat-msg {
+            max-width: 85%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            line-height: 1.5;
+            font-weight: 500;
+            backdrop-filter: blur(5px);
+        }
+        .chat-msg.admin {
+            background: rgba(37, 99, 235, 0.2);
+            color: var(--text-main);
+            border-left: 3px solid #2563eb;
+            align-self: flex-start;
+        }
+        .chat-footer {
+            padding: 12px;
+            background: var(--modal-bg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 8px;
+        }
+        .chat-input {
+            flex: 1;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 10px 14px;
+            color: var(--text-main);
+            font-size: 13px;
+            outline: none;
+            backdrop-filter: blur(5px);
+        }
+        .chat-input:focus { border-color: #2563eb; }
+        .chat-send-btn {
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            width: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .chat-send-btn:hover { background: #1d4ed8; }
+
+        .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 32px; }
+        .metric-card {
+            background: var(--bg-card);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            box-shadow: var(--liquid-glass-shadow);
+            transition: all 0.3s;
+        }
+        .metric-card:hover { transform: translateY(-3px); border-color: rgba(0, 240, 255, 0.4); box-shadow: 0 12px 30px rgba(0,0,0,0.15), var(--liquid-glass-shadow); }
+        .metric-icon {
+            width: 52px; height: 52px;
+            border-radius: 14px;
+            background: rgba(0, 240, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neon-cyan);
+            font-size: 20px;
+            border: 1px solid rgba(0, 240, 255, 0.25);
+            backdrop-filter: blur(5px);
+        }
+        .metric-data span { font-size: 11px; text-transform: uppercase; color: var(--text-sub); font-weight: 700; letter-spacing: 0.8px; }
+        .metric-data h3 { font-family: 'Orbitron', sans-serif; font-size: 20px; font-weight: 800; color: var(--text-main); margin-top: 4px; letter-spacing: 0.5px; }
+
+        .cyber-panel {
+            background: var(--bg-card);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 32px;
+            box-shadow: var(--liquid-glass-shadow);
+            position: relative;
+        }
+        .panel-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 22px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: 0.8px;
+        }
+
+        .download-form { display: flex; gap: 14px; }
+        .cyber-input {
+            flex: 1;
+            background: var(--input-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 16px 20px;
+            color: var(--text-main);
+            font-size: 14px;
+            font-weight: 500;
+            outline: none;
+            transition: all 0.3s;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .cyber-input::placeholder { color: var(--text-sub); }
+        .cyber-input:focus {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2), inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .cyber-select {
+            background: var(--input-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 0 22px;
+            color: var(--neon-cyan);
+            font-weight: 700;
+            font-size: 13.5px;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .cyber-select:hover { border-color: var(--neon-cyan); }
+
+        .cyber-btn {
+            background: linear-gradient(135deg, rgba(255, 42, 117, 0.85), rgba(255, 102, 0, 0.85));
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 14px;
+            padding: 0 30px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 800;
+            font-size: 12.5px;
+            cursor: pointer;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 25px rgba(255, 42, 117, 0.35), inset 0 1px 0 rgba(255,255,255,0.3);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .cyber-btn::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transform: translateX(-100%);
+        }
+        .cyber-btn:hover::after { animation: shimmer 1.2s infinite; }
+        .cyber-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(255, 42, 117, 0.5), inset 0 1px 0 rgba(255,255,255,0.4); }
+        .cyber-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .alert-box {
+            margin-top: 18px;
+            font-size: 13.5px;
+            font-weight: 600;
+            display: none;
+            padding: 14px 18px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.02);
+            backdrop-filter: blur(5px);
+            border-left: 3px solid var(--neon-cyan);
+        }
+
+        .history-table { width: 100%; border-collapse: collapse; margin-top: 5px; }
+        .history-table th {
+            text-align: left;
+            font-size: 11.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-sub);
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border-color);
+            letter-spacing: 0.8px;
+        }
+        .history-table td {
+            padding: 16px 18px;
+            font-size: 13.5px;
+            font-weight: 500;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-sub);
+            transition: background 0.2s;
+        }
+        .history-table tr:hover td { background: var(--table-hover); color: var(--text-main); backdrop-filter: blur(5px); }
+
+        .yt-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 22px;
+            margin-top: 20px;
+        }
+        .yt-card {
+            background: var(--input-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            overflow: hidden;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--liquid-glass-shadow);
+        }
+        .yt-card:hover {
+            border-color: var(--neon-cyan);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 240, 255, 0.15), var(--liquid-glass-shadow);
+        }
+        .yt-thumbnail {
+            width: 100%;
+            height: 140px;
+            background: #000;
+            position: relative;
+            overflow: hidden;
+        }
+        .yt-thumbnail img { width: 100%; height: 100%; object-fit: cover; }
+        .yt-duration {
+            position: absolute;
+            bottom: 8px; right: 8px;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+            color: #fff;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .yt-info {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+        }
+        .yt-title {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--text-main);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .yt-channel-name { font-size: 12px; color: var(--text-sub); font-weight: 500; }
+        .yt-meta {
+            font-size: 11.5px;
+            color: var(--text-sub);
+            margin-top: auto;
+            padding-top: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .channel-profile-card {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            background: var(--input-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid rgba(0, 240, 255, 0.35);
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 25px;
+            box-shadow: var(--liquid-glass-shadow);
+        }
+        .channel-avatar {
+            width: 75px; height: 75px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0,240,255,0.3);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body>
+
+    <!-- POPUP CHÀO MỪNG & ỦNG HỘ DEV -->
+    <div id="welcomeModal" class="modal-overlay open">
+        <div class="welcome-modal-card">
+            <button class="modal-close" onclick="closeWelcomeModal()"><i class="fa-solid fa-xmark"></i></button>
+            <div style="font-size: 34px; color: var(--neon-cyan); margin-bottom: 12px;">
+                <i class="fa-solid fa-heart-pulse"></i>
+            </div>
+            <h2>CHÂN THÀNH CẢM ƠN BẠN!</h2>
+            <p style="margin-bottom: 18px;">
+                Cảm ơn bạn đã tin tưởng và sử dụng dịch vụ của chúng tôi! Mọi thắc mắc hoặc góp ý, bạn có thể liên hệ ngay tại nút <strong style="color:var(--neon-pink);">"THÔNG TIN CÁ NHÂN"</strong> phía trên giao diện nhé.
+            </p>
+            <div style="background: rgba(0,240,255,0.04); backdrop-filter: blur(5px); border: 1px dashed rgba(0,240,255,0.3); padding: 14px; border-radius: 14px; margin-bottom: 18px;">
+                <p style="font-size: 13px; color: var(--text-main); font-weight: 600; margin-bottom: 10px;">
+                    ☕ Để <strong>ủng hộ</strong> dev có kinh phí phát triển dịch vụ, bạn có thể cho dev một ly cà phê tại đây. Xin cảm ơn bạn rất nhiều! ❤️
+                </p>
+                <div class="qr-img-box">
+                    <img src="{{ url_for('static', filename='donate_qr.jpg') }}" alt="Mã QR Ủng Hộ Dev" onerror="this.src='https://via.placeholder.com/170?text=QR+Code+VietQR'">
+                </div>
+            </div>
+            <button class="cyber-btn" onclick="closeWelcomeModal()" style="width: 100%; justify-content: center; padding: 14px;">
+                <i class="fa-solid fa-rocket"></i> BẮT ĐẦU SỬ DỤNG NGAY
+            </button>
+        </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="logo-box">
+            <div class="logo-icon"><i class="fa-solid fa-bolt-lightning"></i></div>
+            <div>
+                <div class="logo-text">DOWN <span>PRO</span></div>
+                <div style="font-size:10.5px; color:var(--text-sub); font-weight:700; margin-top:3px; letter-spacing:0.5px;">CYBER STUDIO V2.8</div>
+            </div>
+        </div>
+
+        <div class="menu-list">
+            <button class="menu-btn active" onclick="switchTab('downloader', this)">
+                <i class="fa-solid fa-cloud-arrow-down"></i> Tải & Trích Xuất
+            </button>
+            <button class="menu-btn" onclick="switchTab('workstation', this)">
+                <i class="fa-solid fa-music"></i> Find Key & Tempo
+            </button>
+            <button class="menu-btn" onclick="switchTab('storage', this)">
+                <i class="fa-solid fa-clock-rotate-left"></i> Lịch Sử Đã Tải
+            </button>
+            <button class="menu-btn" onclick="switchTab('ytbrowser', this)">
+                <i class="fa-brands fa-youtube" style="color:var(--neon-pink);"></i> YouTube Browser
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN WORKSPACE -->
+    <div class="main-workspace">
+        
+        <!-- Tab 1: Downloader -->
+        <div id="downloader" class="tab-content active">
+            <div class="header-bar">
+                <div class="page-heading">
+                    <h1>Down Pro Audio Engine <div class="eq-group" style="display:inline-flex; margin-left:12px;"><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div></div></h1>
+                    <p>Hệ thống trích xuất âm thanh lossless & bypass thuật toán mã hóa YouTube</p>
+                </div>
+                <div class="header-actions">
+                    <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleThemeMode()">
+                        <i class="fa-solid fa-sun" id="themeIcon"></i> <span id="themeText">Chế độ Sáng</span>
+                    </button>
+                    <button class="info-trigger-btn" onclick="toggleInfoModal()">
+                        <i class="fa-solid fa-id-card"></i> THÔNG TIN CÁ NHÂN
+                    </button>
+                    <div class="system-pill">
+                        <span class="pulse-dot"></span>
+                        PHAM SON GIA BAO
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODAL POPUP THÔNG TIN -->
+            <div id="infoModal" class="modal-overlay" onclick="handleModalClick(event)">
+                <div class="modal-card">
+                    <button class="modal-close" onclick="toggleInfoModal()"><i class="fa-solid fa-xmark"></i></button>
+                    <div class="modal-avatar">
+                        <i class="fa-solid fa-crown"></i>
+                    </div>
+                    <h2>PHAM SON GIA BAO</h2>
+                    <p>Nhà Sáng Lập & Phát Triển Down Pro</p>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/gia.bao.452543/?locale=vi_VN" target="_blank" class="social-btn">
+                            <i class="fa-brands fa-facebook" style="font-size: 18px;"></i> Facebook Cá Nhân
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CHAT WIDGET FACEBOOK MESSENGER -->
+            <div class="chat-widget-container">
+                <div id="chatBox" class="chat-box">
+                    <div class="chat-header">
+                        <span><i class="fa-brands fa-facebook-messenger" style="color:#00f0ff;"></i> Nhắn Tin Cho Gia Bảo</span>
+                        <button onclick="toggleChatBox()" style="background:none; border:none; color:#fff; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <div class="chat-body" id="chatBody">
+                        <div class="chat-msg admin">Chào bạn! Nhập nội dung bên dưới và bấm Gửi, hệ thống sẽ mở trực tiếp Messenger của Gia Bảo để nhắn tin cho tôi nhé! ⚡</div>
+                    </div>
+                    <div class="chat-footer">
+                        <input type="text" id="chatInput" class="chat-input" placeholder="Nhập tin nhắn..." onkeypress="handleChatKey(event)">
+                        <button class="chat-send-btn" onclick="sendToFacebookMessenger()"><i class="fa-solid fa-paper-plane"></i></button>
+                    </div>
+                </div>
+                <button class="chat-bubble-btn" onclick="toggleChatBox()">
+                    <i class="fa-brands fa-facebook-messenger"></i>
+                </button>
+            </div>
+
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fa-solid fa-music"></i></div>
+                    <div class="metric-data">
+                        <span>Tệp Đã Xử Lý</span>
+                        <h3 id="statCount">0</h3>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon" style="color: var(--neon-pink); background: rgba(255,42,117,0.1); border-color: rgba(255,42,117,0.25);"><i class="fa-solid fa-database"></i></div>
+                    <div class="metric-data">
+                        <span>Dung Lượng Trống</span>
+                        <h3 id="statDisk">-- GB</h3>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon" style="color: #ffd700; background: rgba(255,215,0,0.1); border-color: rgba(255,215,0,0.25);"><i class="fa-solid fa-crown"></i></div>
+                    <div class="metric-data">
+                        <span>Nhà Sáng Lập</span>
+                        <h3 style="color: var(--neon-cyan); font-size: 15px; margin-top: 6px; font-family: 'Orbitron';">Gia Bảo</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cyber-panel">
+                <div class="panel-title"><i class="fa-brands fa-youtube" style="color: var(--neon-pink); font-size: 16px;"></i> Nhập Đường Dẫn YouTube Cần Tải</div>
+                <form class="download-form" onsubmit="handleProcessDownload(event)">
+                    <input type="url" id="targetUrl" class="cyber-input" placeholder="Dán link YouTube tại đây (Ví dụ: https://www.youtube.com/watch?v=...)" required>
+                    <select id="targetFormat" class="cyber-select">
+                        <option value="WAV">WAV (Lossless)</option>
+                        <option value="MP3">MP3 (320kbps)</option>
+                        <option value="FLAC">FLAC (Lossless)</option>
+                    </select>
+                    <button type="submit" id="submitBtn" class="cyber-btn">
+                        <i class="fa-solid fa-bolt"></i> CONVERT AUDIO
+                    </button>
+                </form>
+                <div id="alertMsg" class="alert-box"></div>
+            </div>
+
+            <div class="cyber-panel">
+                <div class="panel-title"><i class="fa-solid fa-clock-rotate-left" style="color: var(--neon-cyan);"></i> Lịch Sử Phiên Làm Việc</div>
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Tên Tiêu Đề</th>
+                            <th>Thời Lượng</th>
+                            <th>Định Dạng</th>
+                            <th>Thời Gian</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyBody">
+                        <tr><td colspan="4" style="text-align: center; color: var(--text-sub); padding: 24px;">Chưa có dữ liệu chuyển đổi trong phiên này.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab 2: Find Key & Tempo -->
+        <div id="workstation" class="tab-content">
+            <div class="header-bar">
+                <div class="page-heading">
+                    <h1>Find Key & Tempo Workstation</h1>
+                    <p>Tải lên bất kỳ tệp âm thanh nào để phân tích sóng âm, nhịp độ BPM và Tông chính xác</p>
+                </div>
+            </div>
+            
+            <div class="cyber-panel">
+                <div class="panel-title"><i class="fa-solid fa-cloud-arrow-up" style="color: var(--neon-cyan);"></i> Tải Tệp Âm Thanh Lên (MP3, WAV, FLAC, M4A,...)</div>
+                <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 12px;">
+                    <input type="file" id="audioUploadInput" accept="audio/*" class="cyber-input" style="padding: 12px 16px;">
+                    <button class="cyber-btn" onclick="uploadAndAnalyzeAudio()"><i class="fa-solid fa-wand-magic-sparkles"></i> PHÂN TÍCH AUDIO</button>
+                </div>
+                <div style="font-size: 12px; color: var(--text-sub); font-style: italic;">
+                    * Lưu ý: Thông số mang tính chất tham khảo, khuyên dùng các app như VirtualDJ và các DAW để tìm thông số chính xác.
+                </div>
+                <div id="uploadStatus" style="font-size: 13.5px; color: var(--neon-cyan); font-weight: 600; display: none; margin-top: 12px;"></div>
+            </div>
+
+            <div class="cyber-panel">
+                <div class="panel-title"><i class="fa-solid fa-wave-square" style="color: var(--neon-cyan);"></i> Visualizer Waveform & Phân Tích</div>
+                <div id="waveform" style="background: var(--input-bg); backdrop-filter: blur(10px); border-radius: 14px; padding: 12px; margin-bottom: 22px; border: 1px solid var(--border-color);"></div>
+                <div style="display: flex; gap: 35px; align-items: center;">
+                    <button class="cyber-btn" onclick="togglePlay()"><i class="fa-solid fa-play" id="playIcon"></i> PLAY / PAUSE</button>
+                    <div style="font-size: 14px; color: var(--text-main); font-weight: 500;">BPM (Tempo): <strong id="valBpm" style="color: var(--neon-cyan); font-family: 'Orbitron'; font-size: 16px;">--</strong></div>
+                    <div style="font-size: 14px; color: var(--text-main); font-weight: 500;">Tông (Key): <strong id="valKey" style="color: var(--neon-pink); font-family: 'Orbitron'; font-size: 16px;">--</strong></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Storage History -->
+        <div id="storage" class="tab-content">
+            <div class="header-bar">
+                <div class="page-heading">
+                    <h1>Danh Sách Các Bài Đã Tải</h1>
+                    <p>Lưu lại toàn bộ các bài hát mà bạn đã thực hiện thao tác tải xuống từ hệ thống</p>
+                </div>
+            </div>
+            <div class="cyber-panel">
+                <div class="panel-title"><i class="fa-solid fa-cloud-arrow-down" style="color: var(--neon-green);"></i> Lịch Sử Tệp Đã Tải Về</div>
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Tên Tiêu Đề</th>
+                            <th>Thời Lượng</th>
+                            <th>Định Dạng</th>
+                            <th>Thời Gian Tải</th>
+                            <th style="text-align: right;">Hành Động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="storageFilesBody">
+                        <tr><td colspan="5" style="text-align: center; color: var(--text-sub); padding: 24px;">Đang tải danh sách...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 4: YOUTUBE BROWSER -->
+        <div id="ytbrowser" class="tab-content">
+            <div class="header-bar">
+                <div class="page-heading">
+                    <h1>YouTube Live Browser & Profile Search</h1>
+                    <p>Tìm kiếm kênh chính thức và toàn bộ video theo thời gian thực</p>
+                </div>
+            </div>
+
+            <div class="cyber-panel">
+                <div class="panel-title"><i class="fa-brands fa-youtube" style="color: var(--neon-pink); font-size: 16px;"></i> Tra Cứu Kênh & Video YouTube</div>
+                <div class="download-form" style="margin-bottom: 0;">
+                    <input type="text" id="ytSearchQuery" class="cyber-input" placeholder="Nhập từ khóa..." onkeypress="handleYtSearchKey(event)">
+                    <button type="button" class="cyber-btn" onclick="searchYouTubeContent()">
+                        <i class="fa-solid fa-magnifying-glass"></i> TÌM KIẾM
+                    </button>
+                </div>
+                <div id="ytSearchStatus" style="font-size: 13px; color: var(--neon-cyan); font-weight: 600; display: none; margin-top: 12px;"></div>
+            </div>
+
+            <div id="ytChannelContainer" style="display: none;"></div>
+
+            <div class="cyber-panel" id="ytVideosPanel" style="display: none;">
+                <div class="panel-title"><i class="fa-solid fa-film" style="color: var(--neon-cyan);"></i> Danh Sách Video Thời Gian Thực</div>
+                <div class="yt-grid" id="ytVideosGrid"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let ws = null;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeButtonUI(savedTheme);
+
+            ws = WaveSurfer.create({
+                container: '#waveform',
+                waveColor: savedTheme === 'dark' ? '#1e293b' : '#cbd5e1',
+                progressColor: '#00f0ff',
+                cursorColor: '#ff2a75',
+                barWidth: 3,
+                barGap: 2,
+                height: 90,
+                responsive: true
+            });
+            ws.load('/api/latest-audio');
+            fetchStats();
+        });
+
+        function closeWelcomeModal() {
+            document.getElementById('welcomeModal').classList.remove('open');
+        }
+
+        function toggleThemeMode() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeButtonUI(newTheme);
+
+            if(ws) {
+                ws.setOptions({
+                    waveColor: newTheme === 'dark' ? '#1e293b' : '#cbd5e1'
+                });
+            }
+        }
+
+        function updateThemeButtonUI(theme) {
+            const icon = document.getElementById('themeIcon');
+            const text = document.getElementById('themeText');
+            if(theme === 'dark') {
+                if(icon) icon.className = 'fa-solid fa-sun';
+                if(text) text.textContent = 'Chế độ Sáng';
+            } else {
+                if(icon) icon.className = 'fa-solid fa-moon';
+                if(text) text.textContent = 'Chế độ Tối';
+            }
+        }
+
+        function toggleInfoModal() {
+            const modal = document.getElementById('infoModal');
+            modal.classList.toggle('open');
+        }
+
+        function handleModalClick(e) {
+            if(e.target.id === 'infoModal') {
+                toggleInfoModal();
+            }
+        }
+
+        function toggleChatBox() {
+            const chatBox = document.getElementById('chatBox');
+            chatBox.classList.toggle('open');
+        }
+
+        function handleChatKey(e) {
+            if (e.key === 'Enter') {
+                sendToFacebookMessenger();
+            }
+        }
+
+        function sendToFacebookMessenger() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            if(!text) return;
+
+            const chatBody = document.getElementById('chatBody');
+            chatBody.innerHTML += `<div class="chat-msg" style="background:rgba(0,240,255,0.15); color:var(--text-main); align-self:flex-end; border-right:3px solid #00f0ff;">${text}</div>`;
+            input.value = '';
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            setTimeout(() => {
+                const fbUrl = `https://www.facebook.com/gia.bao.452543/?locale=vi_VN`;
+                window.open(fbUrl, '_blank');
+            }, 500);
+        }
+
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.menu-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+            
+            if(tabId === 'workstation') {
+                ws.load('/api/latest-audio');
+            }
+            if(tabId === 'storage') {
+                fetchDownloadedHistoryList();
+            }
+        }
+
+        async function fetchDownloadedHistoryList() {
+            const tbody = document.getElementById('storageFilesBody');
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-sub); padding: 24px;">Đang đồng bộ danh sách...</td></tr>`;
+            
+            try {
+                const res = await fetch('/api/download-history');
+                const history = await res.json();
+                
+                if(!history || history.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-sub); padding: 24px;">Chưa có bài hát nào được tải xuống.</td></tr>`;
+                    return;
+                }
+
+                let html = '';
+                history.forEach((item, index) => {
+                    html += `<tr>
+                        <td style="color:var(--text-main); font-weight:600;"><i class="fa-solid fa-music" style="color:var(--neon-cyan); margin-right:8px;"></i>${item.title}</td>
+                        <td>${item.duration}</td>
+                        <td><span style="background:rgba(0,240,255,0.12); color:var(--neon-cyan); border: 1px solid rgba(0,240,255,0.3); padding:4px 10px; border-radius:6px; font-size:11px; font-weight:800;">${item.format}</span></td>
+                        <td style="color:var(--text-sub);">${item.time}</td>
+                        <td style="text-align: right;">
+                            <button onclick="removeHistoryItem(${index})" title="Xóa khỏi lịch sử" style="background:rgba(255,42,117,0.1); border:1px solid rgba(255,42,117,0.3); color:var(--neon-pink); padding:6px 10px; border-radius:6px; cursor:pointer;"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>`;
+                });
+                tbody.innerHTML = html;
+            } catch(e) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--neon-pink); padding: 24px;">Không thể tải lịch sử từ server.</td></tr>`;
+            }
+        }
+
+        async function removeHistoryItem(index) {
+            try {
+                const res = await fetch(`/api/download-history/${index}`, { method: 'DELETE' });
+                const data = await res.json();
+                if(data.success) {
+                    fetchDownloadedHistoryList();
+                } else {
+                    alert('Không thể xóa mục này');
+                }
+            } catch(e) {
+                alert('Lỗi kết nối đến server!');
+            }
+        }
+
+        async function uploadAndAnalyzeAudio() {
+            const fileInput = document.getElementById('audioUploadInput');
+            const statusDiv = document.getElementById('uploadStatus');
+
+            if (fileInput.files.length === 0) {
+                alert('Vui lòng chọn một tệp âm thanh trước khi phân tích!');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('audio', file);
+
+            statusDiv.style.display = 'block';
+            statusDiv.innerHTML = `⚡ Đang tải lên và phân tích Key & Tempo cho tệp: <strong>${file.name}</strong>...`;
+
+            try {
+                const res = await fetch('/api/upload-analyze', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    document.getElementById('valBpm').innerText = data.bpm;
+                    document.getElementById('valKey').innerText = data.key;
+                    statusDiv.innerHTML = `✅ Phân tích thành công tệp: <strong>${data.filename}</strong>`;
+                    ws.load('/api/latest-audio');
+                } else {
+                    statusDiv.innerHTML = `❌ Lỗi: ${data.error || 'Không thể phân tích file'}`;
+                }
+            } catch (err) {
+                statusDiv.innerHTML = `❌ Lỗi kết nối hoặc xử lý file!`;
+            }
+        }
+
+        async function fetchStats() {
+            try {
+                const res = await fetch('/api/stats');
+                const data = await res.json();
+                document.getElementById('statDisk').innerText = data.disk_free_gb;
+                document.getElementById('statCount').innerText = data.download_count;
+                if(data.history && data.history.length > 0) {
+                    let html = '';
+                    data.history.forEach(item => {
+                        html += `<tr>
+                            <td style="color:var(--text-main); font-weight:600;">${item.title}</td>
+                            <td>${item.duration}</td>
+                            <td><span style="background:rgba(0,240,255,0.12); color:var(--neon-cyan); border: 1px solid rgba(0,240,255,0.3); padding:4px 10px; border-radius:6px; font-size:11px; font-weight:800;">${item.format}</span></td>
+                            <td style="color:var(--text-sub);">${item.time}</td>
+                        </tr>`;
+                    });
+                    document.getElementById('historyBody').innerHTML = html;
+                }
+            } catch(e) { console.error(e); }
+        }
+
+        async function handleProcessDownload(e) {
+            e.preventDefault();
+            const url = document.getElementById('targetUrl').value.trim();
+            const format = document.getElementById('targetFormat').value;
+            const btn = document.getElementById('submitBtn');
+            const msg = document.getElementById('alertMsg');
+
+            if(!url) return;
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> PROCESSING...';
+            msg.style.display = 'block';
+            msg.style.borderColor = 'var(--neon-cyan)';
+            msg.style.color = 'var(--neon-cyan)';
+            msg.innerHTML = '⚡ Đang tải luồng âm thanh từ YouTube, vui lòng chờ trong giây lát...';
+
+            try {
+                const response = await fetch('/api/download', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ url, format })
+                });
+
+                if(response.ok) {
+                    let filename = "audio_file." + format.toLowerCase();
+                    const disp = response.headers.get('Content-Disposition');
+                    if(disp) {
+                        const match = disp.match(/filename\*=UTF-8''([^;'\n]*)/i) || disp.match(/filename="?([^;"\n]*)"?/i);
+                        if(match && match[1]) filename = decodeURIComponent(match[1]);
+                    }
+
+                    const blob = await response.blob();
+                    const downloadUrl = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = downloadUrl;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+
+                    msg.style.borderColor = 'var(--neon-green)';
+                    msg.style.color = 'var(--neon-green)';
+                    msg.innerHTML = `✅ Trích xuất thành công: <strong>${filename}</strong>`;
+                    document.getElementById('targetUrl').value = '';
+                    fetchStats();
+                    ws.load('/api/latest-audio');
+                } else {
+                    const err = await response.json();
+                    msg.style.borderColor = 'var(--neon-pink)';
+                    msg.style.color = 'var(--neon-pink)';
+                    msg.innerText = `❌ Lỗi: ${err.error || 'Không thể xử lý link này'}`;
+                }
+            } catch(err) {
+                msg.style.borderColor = 'var(--neon-pink)';
+                msg.style.color = 'var(--neon-pink)';
+                msg.innerText = '❌ Lỗi kết nối hoặc mất quá nhiều thời gian xử lý!';
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-bolt"></i> CONVERT AUDIO';
+            }
+        }
+
+        function handleYtSearchKey(e) {
+            if(e.key === 'Enter') {
+                searchYouTubeContent();
+            }
+        }
+
+        async function searchYouTubeContent() {
+            const query = document.getElementById('ytSearchQuery').value.trim();
+            const statusDiv = document.getElementById('ytSearchStatus');
+            const channelContainer = document.getElementById('ytChannelContainer');
+            const videosPanel = document.getElementById('ytVideosPanel');
+            const videosGrid = document.getElementById('ytVideosGrid');
+
+            if(!query) {
+                alert('Vui lòng nhập từ khóa tìm kiếm!');
+                return;
+            }
+
+            statusDiv.style.display = 'block';
+            statusDiv.innerHTML = `⚡ Đang kết nối dữ liệu thời gian thực cho từ khóa: <strong>${query}</strong>...`;
+            channelContainer.style.display = 'none';
+            videosPanel.style.display = 'none';
+
+            try {
+                const res = await fetch(`/api/youtube-search?q=${encodeURIComponent(query)}`);
+                const data = await res.json();
+
+                if(data.success) {
+                    statusDiv.innerHTML = `✅ Tìm thấy kết quả cho: <strong>${query}</strong>`;
+
+                    if(data.channel) {
+                        channelContainer.style.display = 'block';
+                        channelContainer.innerHTML = `
+                            <div class="channel-profile-card">
+                                <img src="${data.channel.avatar}" class="channel-avatar" alt="Channel Avatar">
+                                <div>
+                                    <h3 style="font-family:'Orbitron'; font-size:16px; color:var(--text-main); margin-bottom:4px;">${data.channel.name} <i class="fa-solid fa-circle-check" style="color:var(--neon-cyan); font-size:14px;"></i></h3>
+                                    <p style="font-size:12.5px; color:var(--text-sub); margin-bottom:8px;">${data.channel.subscribers} • ${data.channel.videosCount}</p>
+                                    <p style="font-size:13.5px; color:var(--text-main); margin-bottom:12px;">${data.channel.description || ''}</p>
+                                    <a href="${data.channel.url}" target="_blank" class="cyber-btn" style="display:inline-flex; padding:8px 16px; font-size:11.5px;">GÉP THĂM KÊNH YOUTUBE</a>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    if(data.videos && data.videos.length > 0) {
+                        videosPanel.style.display = 'block';
+                        let gridHtml = '';
+                        data.videos.forEach(video => {
+                            gridHtml += `
+                                <div class="yt-card">
+                                    <div class="yt-thumbnail">
+                                        <img src="${video.thumbnail}" alt="Thumbnail">
+                                        <div class="yt-duration">${video.duration}</div>
+                                    </div>
+                                    <div class="yt-info">
+                                        <div class="yt-title">${video.title}</div>
+                                        <div class="yt-channel-name">${video.channelTitle}</div>
+                                        <div class="yt-meta">
+                                            <span>${video.views} lượt xem</span>
+                                            <span>${video.publishedAt}</span>
+                                        </div>
+                                        <a href="${video.url}" target="_blank" class="cyber-btn" style="margin-top:10px; justify-content:center; padding:8px; font-size:11.5px;">XEM TRÊN YT</a>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        videosGrid.innerHTML = gridHtml;
+                    } else {
+                        videosGrid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; color:var(--text-sub); padding:30px;">Không tìm thấy video nào phù hợp.</div>`;
+                    }
+
+                } else {
+                    statusDiv.innerHTML = `❌ Không tìm thấy kết quả hoặc lỗi từ hệ thống.`;
+                }
+            } catch(err) {
+                statusDiv.innerHTML = `❌ Lỗi kết nối tới server xử lý YouTube!`;
+            }
+        }
+
+        function togglePlay() {
+            if(ws) {
+                if(ws.isPlaying()) {
+                    ws.pause();
+                } else {
+                    ws.play();
+                }
+            }
+        }
+    </script>
+</body>
+</html>
