@@ -1,4 +1,6 @@
 flask
-yt-dlp
+yt-dlp>=2024.0.0
 gunicorn
 requests
+librosa
+numpy

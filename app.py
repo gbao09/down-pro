@@ -130,7 +130,7 @@ def download_audio():
         'no_warnings': True,
         'extractor_args': {
             'youtube': {
-                'player_client': ['android', 'web']
+                'player_client': ['ios', 'mweb', 'web']
             }
         }
     }
