@@ -139,8 +139,8 @@ def download_audio():
         'cookiefile': 'cookies.txt' if os.path.exists('cookies.txt') else None,
         'nocheckcertificate': True,
         'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-            }
-        }
+              }
+         }
     }
     # Lọc bỏ key cookiefile nếu file không tồn tại để tránh lỗi
     if not ydl_opts['cookiefile']:
