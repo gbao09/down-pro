@@ -128,6 +128,7 @@ def download_audio():
         'noplaylist': True,
         'quiet': True,
         'no_warnings': True,
+        'cookiefile': 'cookies.txt',  # Thêm dòng này để nhận diện tài khoản
         'extractor_args': {
             'youtube': {
                 'player_client': ['ios', 'mweb', 'web']
