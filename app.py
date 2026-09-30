@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import imageio_ffmpeg
 import os
 import re
 import time
@@ -122,19 +123,20 @@ def download_audio():
     output_template = os.path.join(DOWNLOAD_FOLDER, f"%(title)s_{timestamp}.%(ext)s")
 
     ydl_opts = {
-        'format': 'bestaudio/best',
-        'postprocessors': postprocessors,
-        'outtmpl': output_template,
-        'noplaylist': True,
-        'quiet': True,
-        'no_warnings': True,
-        'cookiefile': 'cookies.txt',  # Thêm dòng này để nhận diện tài khoản
-        'extractor_args': {
-            'youtube': {
-                'player_client': ['ios', 'mweb', 'web']
-            }
+    'format': 'bestaudio/best',
+    'ffmpeg_location': imageio_ffmpeg.get_ffmpeg_exe(), # Thêm dòng này để tự động nhận FFmpeg
+    'postprocessors': postprocessors,
+    'outtmpl': output_template,
+    'noplaylist': True,
+    'quiet': True,
+    'no_warnings': True,
+    'cookiefile': 'cookies.txt',
+    'extractor_args': {
+        'youtube': {
+            'player_client': ['ios', 'mweb', 'web']
         }
     }
+}
 
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
