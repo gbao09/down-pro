@@ -1,5 +1,5 @@
 flask
-yt-dlp>=2024.0.0
+yt-dlp>=2026.3.17
 gunicorn
 requests
 librosa

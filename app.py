@@ -113,10 +113,11 @@ def download_audio():
     if not url:
         return jsonify({'error': 'Vui lòng cung cấp đường dẫn YouTube!'}), 400
 
-    if format_option.upper() == 'FLAC':
+    format_upper = format_option.upper()
+    if format_upper == 'FLAC':
         ext = 'flac'
         postprocessors = [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'flac'}]
-    elif format_option.upper() == 'MP3':
+    elif format_upper == 'MP3':
         ext = 'mp3'
         postprocessors = [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3', 'preferredquality': '320'}]
     else:
@@ -126,21 +127,25 @@ def download_audio():
     timestamp = int(time.time())
     output_template = os.path.join(DOWNLOAD_FOLDER, f"%(title)s_{timestamp}.%(ext)s")
 
+    # Sửa lỗi format bằng cách dùng 'bestaudio/best' linh hoạt hơn thay vì ép buộc cứng
     ydl_opts = {
-        'format': 'bestaudio/bestaudio',
+        'format': 'bestaudio/best',
         'ffmpeg_location': ffmpeg_path,
         'postprocessors': postprocessors,
         'outtmpl': output_template,
         'noplaylist': True,
         'quiet': True,
         'no_warnings': True,
-        'cookiefile': 'cookies.txt',
+        'cookiefile': 'cookies.txt' if os.path.exists('cookies.txt') else None,
         'extractor_args': {
             'youtube': {
                 'player_client': ['android', 'web']
             }
         }
     }
+    # Lọc bỏ key cookiefile nếu file không tồn tại để tránh lỗi
+    if not ydl_opts['cookiefile']:
+        ydl_opts.pop('cookiefile', None)
 
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -163,7 +168,7 @@ def download_audio():
             download_history.append({
                 "title": safe_title,
                 "duration": duration_str,
-                "format": format_option.upper(),
+                "format": format_upper,
                 "time": current_time
             })
 
