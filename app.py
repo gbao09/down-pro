@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import imageio_ffmpeg
 import os
 import re
 import time
@@ -9,6 +8,12 @@ from flask import Flask, render_template, request, jsonify, send_file
 import yt_dlp
 
 try:
+    import imageio_ffmpeg
+    ffmpeg_path = imageio_ffmpeg.get_ffmpeg_exe()
+except Exception:
+    ffmpeg_path = 'ffmpeg'
+
+try:
     import librosa
     import numpy as np
     LIBROSA_AVAILABLE = True
@@ -16,7 +21,6 @@ except ImportError:
     LIBROSA_AVAILABLE = False
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-# Đã trỏ template_folder về thư mục 'templates' chuẩn
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
 DOWNLOAD_FOLDER = os.path.join(BASE_DIR, "downloads")
@@ -123,8 +127,8 @@ def download_audio():
     output_template = os.path.join(DOWNLOAD_FOLDER, f"%(title)s_{timestamp}.%(ext)s")
 
     ydl_opts = {
-        'format': 'best',  # Lấy định dạng tốt nhất có sẵn để tránh kén chọn luồng
-        'ffmpeg_location': imageio_ffmpeg.get_ffmpeg_exe(),
+        'format': 'bestaudio/bestaudio',
+        'ffmpeg_location': ffmpeg_path,
         'postprocessors': postprocessors,
         'outtmpl': output_template,
         'noplaylist': True,
