@@ -129,7 +129,7 @@ def download_audio():
 
     # Sửa lỗi format bằng cách dùng 'bestaudio/best' linh hoạt hơn thay vì ép buộc cứng
     ydl_opts = {
-        'format': 'best/bestaudio',
+        'format': 'bestaudio/best',
         'ffmpeg_location': ffmpeg_path,
         'postprocessors': postprocessors,
         'outtmpl': output_template,
@@ -137,9 +137,8 @@ def download_audio():
         'quiet': True,
         'no_warnings': True,
         'cookiefile': 'cookies.txt' if os.path.exists('cookies.txt') else None,
-        'extractor_args': {
-            'youtube': {
-                'player_client': ['ios', 'web']
+        'nocheckcertificate': True,
+        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
             }
         }
     }
